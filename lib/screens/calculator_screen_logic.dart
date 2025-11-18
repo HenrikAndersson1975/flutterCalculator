@@ -16,6 +16,7 @@ class CalculatorScreenLogic {
   String _errorMessage = '';
   double? _memoryValue;
 
+
   // värden som ui använder
   String get smallText => _smallText;
   String get largeText => _largeText;
@@ -23,7 +24,9 @@ class CalculatorScreenLogic {
   String get errorMessage => _errorMessage;
   bool get hasMemory => _memoryValue != null;
 
+
   CalculatorScreenLogic(this.state);
+
 
   void keyboardButtonPressed(String buttonText) {
 
@@ -36,7 +39,7 @@ class CalculatorScreenLogic {
       case 'M+':
         // fungerar om tal i inmatningsfält
         if (_largeText.isEmpty || _isNumber(_largeText)) {                
-          _memoryValue = (_memoryValue ?? 0) + double.parse(_largeText.replaceAll(',', ','));
+          _memoryValue = (_memoryValue ?? 0) + _toDouble(_largeText);
         }
         else {
            _isValid = false;
@@ -46,9 +49,8 @@ class CalculatorScreenLogic {
         
       case 'M-':
         // fungerar om tal i inmatningsfält
-        if (_largeText.isEmpty || _isNumber(_largeText)) {
-         
-          _memoryValue = (_memoryValue ?? 0) - double.parse(_largeText.replaceAll(',', ','));         
+        if (_largeText.isEmpty || _isNumber(_largeText)) {   
+          _memoryValue = (_memoryValue ?? 0) - _toDouble(_largeText);         
         }
         else {
           _isValid = false;
@@ -59,7 +61,6 @@ class CalculatorScreenLogic {
       case 'MR':
         // lägg innehållet i minnet till display
         if (_memoryValue != null) {    
-
           if (_isShowingResult || _largeText == "0") {
             _isValid = true;               
             _input =  _formatResult(_memoryValue.toString());
@@ -98,9 +99,10 @@ class CalculatorScreenLogic {
 
       // DELETE
       case 'DEL':
-        _input = _input.isNotEmpty
-            ? _input.substring(0, _input.length - 1)
-            : '';
+        if(_isShowingResult) {
+          _input = _result;         
+        }
+        _input = _input.isNotEmpty ? _input.substring(0, _input.length - 1) : '';
         if (_input.isEmpty) {
           keyboardButtonPressed('C');
         } else {
@@ -123,8 +125,7 @@ class CalculatorScreenLogic {
           if (evaluate) {
             _isShowingResult = true;
             try {
-              _result = _getExpressionResult(_input);
-              // logga uttryck och resultat?
+              _result = _getExpressionResult(_input);           
             }
             catch(e) {
               _result = e.toString();
@@ -177,7 +178,6 @@ class CalculatorScreenLogic {
           _errorMessage = error;
         }
 
-
         //
         if (_isValid) {
           if (_input == '0' && !isDecimalPoint(buttonText)) {
@@ -206,8 +206,6 @@ class CalculatorScreenLogic {
   String _formatResult(String resultAsString) {
     // todo om en massa 0000000000
     // maximalt antal tecken
-
-  
     // 
 
 
@@ -323,5 +321,16 @@ class CalculatorScreenLogic {
       isNumber =  (isSubtractOperator(char)&&i==0 && input.length>1) ||  isDigit(char) || (isDecimalPoint(char) && i!=input.length-1);
     }
     return isNumber;
+  }
+
+  double _toDouble(String text) {
+    double value;
+    try {
+      value = double.parse(text.replaceAll(',', ','));
+    }
+    catch (e) {
+      value = 0;
+    }
+    return value;
   }
 }

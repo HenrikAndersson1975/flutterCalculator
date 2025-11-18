@@ -16,7 +16,7 @@ class Display extends StatelessWidget {
 
     return Padding(
  
-      padding: const EdgeInsets.all(2.0),
+      padding: const EdgeInsets.all(6.0),
       child: Container(
         width: double.infinity,
         decoration: BoxDecoration(
@@ -28,16 +28,16 @@ class Display extends StatelessWidget {
         child: Row(
           children: [      
               SizedBox(
-                width: 10,
+                width: 14,
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
                     hasMemory ? 'M':' ',
                     style: TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.bold,
-                      fontSize: 8,
+                      fontSize: 12,
                     ),                   
                                 ),
                   ],
@@ -50,6 +50,7 @@ class Display extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                        
+                  // liten text för uttryck som beräknats
                   if (smallText.isNotEmpty)
                     FittedBox(
                       fit: BoxFit.scaleDown,
@@ -64,7 +65,7 @@ class Display extends StatelessWidget {
               
                   const SizedBox(height: 8),
                   
-              
+                  // stor text för att visa inmatning eller resultat
                   FittedBox(
                     fit: BoxFit.scaleDown,
                     alignment: Alignment.centerRight,

@@ -48,14 +48,14 @@ class CalculatorApp extends StatelessWidget {
 
           textTheme: ButtonTextTheme.primary, // Textfärg för knappar
         ),*/
-        scaffoldBackgroundColor: Colors.white, // Bakgrundsfärg för hela appen
+        scaffoldBackgroundColor: const Color.fromARGB(255, 112, 109, 109) // Bakgrundsfärg för hela appen
       ),
 
       
 
      
 
-      home: const CalculatorScreen(title: 'Flutter-kalkylator'),
+      home: SafeArea(child: const CalculatorScreen(title: 'Flutter-kalkylator')),
     );
   }
 }

@@ -41,25 +41,28 @@ class _ButtonState extends State<Button> {
 @override
 Widget build(BuildContext context) {
   
+  final Color bgColor =   
+        switch (widget.buttonFunction) {
+          ButtonFunction.operator   =>  const Color.fromARGB(255, 246, 162, 5),
+          ButtonFunction.memory => const Color.fromARGB(255, 210, 232, 217), 
+          ButtonFunction.number   =>  const Color.fromARGB(255, 52, 49, 49),
+          ButtonFunction.other    => const Color.fromARGB(255, 152, 149, 149),
+        };
 
-   final Color bgColor =  const Color.fromARGB(255, 177, 169, 169);
-    
 
-
-  final Color textColor = widget.isDisabled 
-      ? const Color.fromARGB(255, 131, 131, 131) 
-      : switch (widget.buttonFunction) {
+  final Color textColor =     
+       switch (widget.buttonFunction) {
           ButtonFunction.operator   =>  const Color.fromARGB(255, 31, 29, 29),
-          ButtonFunction.memory => const Color.fromARGB(255, 0, 121, 41), 
-          ButtonFunction.number   => const Color.fromARGB(255, 20, 17, 230), 
-          ButtonFunction.other    => const Color.fromARGB(255, 221, 69, 69),
+          ButtonFunction.memory => const Color.fromARGB(255, 31, 29, 29), 
+          ButtonFunction.number   => const Color.fromARGB(255, 255,255,255), 
+          ButtonFunction.other    => const Color.fromARGB(255, 31, 29, 29),
         };
 
   
 
   return Expanded(
     child: Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(3.0),
       child: GestureDetector(
         onTap: widget.isDisabled ? null : _onTap,
         child: AnimatedScale(

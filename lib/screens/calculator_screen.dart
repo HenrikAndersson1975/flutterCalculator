@@ -61,13 +61,11 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-       body: SafeArea(
-         child: Column(
-            children: [
-          
+       body: Column(
+            children: [    
               // fast höjd på display
               SizedBox(
-                height: 100, 
+                height: 120, 
                 child: Display(
                   smallText: logic.smallText,
                   largeText: logic.largeText,
@@ -81,8 +79,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                 child: Keyboard(onButtonPressed: onKeyboardButtonPressed),
               ),
             ],
-          ),
-       ),
+          ),     
     );
   }
 }
