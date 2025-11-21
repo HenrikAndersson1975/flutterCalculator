@@ -37,63 +37,59 @@ class _ButtonState extends State<Button> {
 
  
 
-  
 @override
 Widget build(BuildContext context) {
   
-
-   final Color bgColor =  const Color.fromARGB(255, 177, 169, 169);
-    
-
-
-  final Color textColor = widget.isDisabled 
-      ? const Color.fromARGB(255, 131, 131, 131) 
-      : switch (widget.buttonFunction) {
-          ButtonFunction.operator   =>  const Color.fromARGB(255, 31, 29, 29),
-          ButtonFunction.memory => const Color.fromARGB(255, 0, 121, 41), 
-          ButtonFunction.number   => const Color.fromARGB(255, 20, 17, 230), 
-          ButtonFunction.other    => const Color.fromARGB(255, 221, 69, 69),
+  final Color backgroundColor =   
+        switch (widget.buttonFunction) {
+          ButtonFunction.operator   =>  const Color.fromARGB(255, 246, 162, 5),
+          ButtonFunction.memory => const Color.fromARGB(255, 210, 232, 217), 
+          ButtonFunction.number   =>  const Color.fromARGB(255, 52, 49, 49),
+          ButtonFunction.other    => const Color.fromARGB(255, 152, 149, 149),
         };
 
-  
+  final Color textColor =     
+       switch (widget.buttonFunction) {
+          ButtonFunction.operator   =>  const Color.fromARGB(255, 31, 29, 29),
+          ButtonFunction.memory => const Color.fromARGB(255, 31, 29, 29), 
+          ButtonFunction.number   => const Color.fromARGB(255, 255,255,255), 
+          ButtonFunction.other    => const Color.fromARGB(255, 31, 29, 29),
+        };
 
-  return Expanded(
-    child: Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: GestureDetector(
-        onTap: widget.isDisabled ? null : _onTap,
-        child: AnimatedScale(
-          scale: _isPressed ? 0.92 : 1.0,
-          duration: const Duration(milliseconds: 80),
-          child: Container(
-            decoration: BoxDecoration(
-              color: bgColor,
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: 
-                  
-                   [
-                      BoxShadow(
-                        offset: const Offset(0, 2),
-                        blurRadius: 4,
-                        color: Colors.black,
-                      ),
-                    ],
-            ),
-            child: Center(
-              child: Text(
-                widget.label,
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w500,
-                  color: textColor,
+    return 
+       GestureDetector(
+          onTap: widget.isDisabled ? null : _onTap,
+          child: AnimatedScale(
+            scale: _isPressed ? 0.92 : 1.0,
+            duration: const Duration(milliseconds: 80),
+            child: Container(
+              decoration: BoxDecoration(
+                color: backgroundColor,
+                borderRadius: BorderRadius.circular(12),
+                /*boxShadow:           
+                     [
+                        BoxShadow(
+                          offset: const Offset(0, 2), 
+                          blurRadius: 4, 
+                          color: Colors.black,
+                        ),
+                      ],*/
+              ),
+              child: Center(
+                child: Text(
+                  widget.label,
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w500,
+                    color: textColor,
+                  ),
                 ),
               ),
             ),
-          ),
+         
+          
         ),
-      ),
-    ),
-  );
+    );
 }
 
 }

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_calculator/screens/calculator_screen_logic.dart';
@@ -17,8 +18,9 @@ class CalculatorScreen extends StatefulWidget {
 class _CalculatorScreenState extends State<CalculatorScreen> {
   late final CalculatorScreenLogic logic;
 
-  Timer? _errorTimer;
+  Timer? _timer;
   bool _keyboardError=false;
+  bool _showMemoryIndicator=false;
 
   @override
   void initState() {
@@ -28,24 +30,30 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
 
   @override
   void dispose() {
-    _errorTimer?.cancel();
+    _timer?.cancel();
     super.dispose();
   }
 
   // 
   void onKeyboardButtonPressed(String buttonText) {
     setState(() {
-      logic.keyboardButtonPressed(buttonText);    
+      logic.keyboardButtonPressed(buttonText);  
+      
+      _showMemoryIndicator = logic.hasMemory;  
+
       if (!logic.isValid) {
-        _triggerKeyboardError();
+        _triggerKeyboardErrorIndication();
+      }
+      else if (logic.hasMemory && logic.memoryValueChanged) {
+        _triggerMemoryUpdatedIndication();
       }
     });
   }
 
-  void _triggerKeyboardError() {
+  void _triggerKeyboardErrorIndication() {
     _keyboardError = true;
-    _errorTimer?.cancel();
-    _errorTimer = Timer(const Duration(milliseconds: 200), () {
+    _timer?.cancel();
+    _timer = Timer(const Duration(milliseconds: 200), () {
       if (mounted) {
         setState(() {
           _keyboardError = false;
@@ -54,35 +62,113 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     });
   }
   
+  void _triggerMemoryUpdatedIndication() {
+    _showMemoryIndicator = false;
+    _timer?.cancel();
+    _timer = Timer(const Duration(milliseconds: 200), () {
+      if (mounted) {
+        setState(() {
+          _showMemoryIndicator = true;
+        });
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
+    bool isLandscape = screenWidth> screenHeight;
+    int displayHeightRatio;
+    int keyboardHeightRatio; 
+
+    double maxWidth, minWidth;
+    double maxHeight, minHeight;
+    {
+      if (isLandscape) 
+      {
+          // landscape
+          displayHeightRatio = 2;
+          keyboardHeightRatio = 3; 
+
+          maxWidth = 1000;
+          minWidth = min(500,screenWidth);
+          maxHeight = 800;
+          minHeight = min(500,screenHeight);
+      }
+      else
+      {
+          // portrait
+          displayHeightRatio = 1;
+          keyboardHeightRatio = 3;
+
+          maxWidth = 1000;
+          minWidth = min(600,screenWidth);
+          maxHeight = screenHeight;
+          minHeight = min(600,screenHeight);
+      }
+     
+    }
+
+ 
+
+
+
+
+   
+     
+    Color calculatorBackgroundColor = Color.fromARGB(255, 112, 109, 109);
+    
+   
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
-       body: SafeArea(
-         child: Column(
-            children: [
-          
-              // fast höjd på display
-              SizedBox(
-                height: 100, 
-                child: Display(
-                  smallText: logic.smallText,
-                  largeText: logic.largeText,
-                  hasMemory: logic.hasMemory,
-                  alert: _keyboardError,
-                ),
-              ),
-            
-              // keyboard tar upp resten av höjden
-              Expanded(
-                child: Keyboard(onButtonPressed: onKeyboardButtonPressed),
-              ),
-            ],
+      
+       body: Center(
+         child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: maxWidth, minWidth: minWidth,
+            maxHeight: maxHeight, minHeight: minHeight
           ),
-       ),
+           child:  Container(
+             
+              decoration: BoxDecoration(
+    color: calculatorBackgroundColor,
+   
+  ), 
+
+              
+               child: Column(                                 
+                    children: [    
+               
+                      // display
+                      Expanded(
+                        flex: displayHeightRatio,
+                        child: Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Display(
+                            smallText: logic.smallText,
+                            largeText: logic.largeText,
+                            hasMemory: _showMemoryIndicator,                            
+                            alert: _keyboardError,
+                          ),
+                        ),
+                      ),
+                    
+                      // keyboard 
+                      Expanded(
+                        flex: keyboardHeightRatio,
+                        child: Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Keyboard(onButtonPressed: onKeyboardButtonPressed),
+                        ),
+                      ),
+                    ],
+                  ),
+            
+           ),
+         ),
+       ),     
     );
   }
 }

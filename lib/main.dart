@@ -15,47 +15,20 @@ class CalculatorApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
 
       theme: ThemeData(
-        // Definiera ditt eget tema här
-        //primarySwatch: Colors.blue, // Primär färg för appen
+                     
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueGrey),
+      
+        scaffoldBackgroundColor: const Color.fromARGB(255, 212, 219, 211) // Bakgrundsfärg för hela appen
+
         
-        textTheme: TextTheme(
-             labelLarge: TextStyle(fontSize: 32, color: Colors.black, fontWeight: FontWeight.bold),
-             labelMedium: TextStyle(fontSize: 16, color: Colors.black), 
-               
-        ),
-
-      /*  elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
- 
-            foregroundColor: Colors.black,
-            backgroundColor: Colors.green,
-            disabledForegroundColor: const Colors.grey,
-            disabledBackgroundColor: Colors.green,
-
-            
-
-          ),
-        ),
-*/
-
-       /* buttonTheme: ButtonThemeData(
-
-
-
-          buttonColor: Colors.blue, // Bakgrundsfärg för knappar
-          disabledColor: Colors.grey,
-
-
-          textTheme: ButtonTextTheme.primary, // Textfärg för knappar
-        ),*/
-        scaffoldBackgroundColor: Colors.white, // Bakgrundsfärg för hela appen
       ),
 
       
 
      
 
-      home: const CalculatorScreen(title: 'Flutter-kalkylator'),
+      home: SafeArea(child: const CalculatorScreen(title: 'Flutter-kalkylator')),
     );
   }
 }
