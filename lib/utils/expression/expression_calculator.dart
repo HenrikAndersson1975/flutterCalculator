@@ -1,9 +1,8 @@
-import 'package:flutter_calculator/utils/expression/token_types.dart';
-import 'package:flutter_calculator/utils/expression/expression_char_parser.dart';
-import 'package:flutter_calculator/utils/expression/maths_operations.dart';
-import 'package:flutter_calculator/utils/expression/tokens.dart';
+import 'package:flutter_calculator/utils/expression/barrel_file.dart';
 
-
+//
+// beräknar resultat (tal) av uttrycket
+//
 double calculateExpression(String expression) {
   final tokens = _tokenizeExpression(expression);
   final rpn = _toReversePolishNotation(tokens);
@@ -19,8 +18,8 @@ List<Token> _tokenizeExpression(String expression) {
   // byt decimaltecken
   expression = expression.replaceAll(' ', '').replaceAll(',', '.');
 
-  // om inleder med minustecken lägg till nolla före
-  if (expression.isNotEmpty && isSubtractOperator(expression[0])) { expression = '0$expression'; }
+  expression = _handleSubtractOperators(expression);
+
 
   final tokens = <Token>[];
   final chars = expression.split('');
@@ -30,10 +29,10 @@ List<Token> _tokenizeExpression(String expression) {
     final char = chars[i];
 
     // hantera tal
-    if (isDigit(char)) {     
+    if (chars[i].isDigit()) {     
       String num = '';
       while (i < chars.length &&
-          (isDigit(chars[i]) || isDecimalPoint(chars[i]))) {
+          (chars[i].isDigit() || chars[i].isDecimalPoint())) {
         num += chars[i];
         i++;
       }
@@ -43,21 +42,21 @@ List<Token> _tokenizeExpression(String expression) {
     }
    
     // hantera operatorer
-    if (isAddOperator(char)) { tokens.add(Token(TokenType.add)); }
-    else if (isSubtractOperator(char)) { tokens.add(Token(TokenType.subtract));}
-    else if (isMultiplyOperator(char))  { tokens.add(Token(TokenType.multiply));}
-    else if (isDivideOperator(char)) { tokens.add(Token(TokenType.divide));}
+    if (char.isAddOperator()) { tokens.add(Token(TokenType.add)); }
+    else if (char.isSubtractOperator()) { tokens.add(Token(TokenType.subtract));}
+    else if (char.isMultiplyOperator())  { tokens.add(Token(TokenType.multiply));}
+    else if (char.isDivideOperator()) { tokens.add(Token(TokenType.divide));}
 
     // hantera parenteser
-    else if (isLeftParenthesis(char)) {
+    else if (char.isLeftParenthesis()) {
         String previousChar = i>0 ? chars[i-1] : '';
         // om föregående är ) eller siffra lägg in en multiply
-        if (isRightParenthesis(previousChar) || isDigit(previousChar)) {
+        if (previousChar.isRightParenthesis() || previousChar.isDigit()) {
           tokens.add(Token(TokenType.multiply));
         }
         tokens.add(Token(TokenType.leftParenthesis));
     }
-    else if (isRightParenthesis(char)) {
+    else if (char.isRightParenthesis()) {
       tokens.add(Token(TokenType.rightParenthesis));
     }
 
@@ -71,6 +70,19 @@ List<Token> _tokenizeExpression(String expression) {
   }
 
   return tokens;
+}
+
+String _handleSubtractOperators(String expression) {
+
+  String subtractOperatorReplacement = "(0-1)*";
+
+  // om minustecken efter vänsterparentes
+  expression = expression.replaceAll('(-', '($subtractOperatorReplacement');
+
+  // om inleder med minustecken  
+  if (expression.isNotEmpty && expression[0].isSubtractOperator()) { expression = '$subtractOperatorReplacement${expression.substring(1)}'; }
+
+  return expression;
 }
 
 
