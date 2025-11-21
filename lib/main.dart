@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_calculator/screens/calculator_screen.dart';
+import 'package:flutter_calculator/theme/calculator_theme.dart';
 
 void main() {
   runApp(const CalculatorApp());
@@ -13,24 +14,10 @@ class CalculatorApp extends StatelessWidget {
     return MaterialApp(
       title: 'Uträknare',
       debugShowCheckedModeBanner: false,
-
-      theme: ThemeData(
-                     
-        useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueGrey),
-      
-        scaffoldBackgroundColor: const Color.fromARGB(255, 212, 219, 211) // Bakgrundsfärg för hela appen
-
-        
-      ),
-
-      
-
-     
-
-      home: SafeArea(child: const CalculatorScreen(title: 'Flutter-kalkylator')),
+      theme: CalculatorTheme.light,
+      home: const SafeArea(child: CalculatorScreen(title: 'Flutter-kalkylator')),
     );
-  }
+  }   
 }
 
-
+ 

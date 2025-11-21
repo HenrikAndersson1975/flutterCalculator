@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_calculator/theme/calculator_app_theme.dart';
+import 'package:flutter_calculator/theme/extensions/calculator_display_theme.dart';
 
 class Display extends StatelessWidget {
   final String smallText;
@@ -16,10 +18,9 @@ class Display extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color borderColor = alert ? Colors.red : Colors.black;
-    Color displayColor = alert ? Colors.red : Colors.white;
 
-    
+    CalculatorDisplayTheme theme = Theme.of(context).extension<CalculatorAppTheme>()!.display;
+
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
        
@@ -30,8 +31,8 @@ class Display extends StatelessWidget {
         return Container(
           width: double.infinity,
           decoration: BoxDecoration(
-            color: displayColor,
-            border: Border.all(color: borderColor, width: 1),
+            color: alert ? theme.displayAlertColor : theme.displayColor,
+            border: Border.all(color: alert ? theme.borderAlertColor : theme.borderColor, width: 1),
             borderRadius: BorderRadius.circular(10),
           ),
           padding: const EdgeInsets.all(8.0),
@@ -45,7 +46,7 @@ class Display extends StatelessWidget {
                     Text(
                       hasMemory ? 'M' : ' ',
                       style: TextStyle(
-                        color: Colors.black,
+                        color: theme.memoryIndicatorColor,
                         fontWeight: FontWeight.bold,
                         fontSize: szFontMemory,
                       ),
@@ -66,7 +67,8 @@ class Display extends StatelessWidget {
                         alignment: Alignment.centerRight,
                         child: Text(
                           smallText,
-                          style: TextStyle(
+                          style: TextStyle( 
+                            color: theme.smallTextColor,
                             fontSize: szFontExpression,
                             fontWeight: FontWeight.w500,
                           ),
@@ -83,6 +85,7 @@ class Display extends StatelessWidget {
                       child: Text(
                         largeText.isEmpty ? '0' : largeText,
                         style: TextStyle(
+                          color: theme.largeTextColor,
                           fontSize: szFontInput,
                           fontWeight: FontWeight.w500,
                         ),

@@ -157,9 +157,6 @@ class Keyboard extends StatelessWidget {
         double buttonWidth = (constraints.maxWidth - (columnsCount - 1) * columnSpacing)/ columnsCount;
         double buttonHeight = (constraints.maxHeight - (rowsCount - 1) * rowSpacing) / rowsCount;
        
-        
-
-
         return GridView.builder(
           shrinkWrap: true,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(

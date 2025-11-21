@@ -1,16 +1,21 @@
 # flutter_calculator
 
-A new Flutter project.
+### operationer ###
+Räknaren hanterar räknesätten +, -, * och /.
+Det går att skriva hela uttryck och använda parenteser för att ändra i vilken ordning operationerna utförs.
 
-## Getting Started
+### minne ###
+Det går att lagra ett tal i minnet.
+M+, addera resultat till det tal som finns i minnet.
+M-, subtrahera resultat från det tal som finns i minnet.
+MR, visa/använd det tal som är i minnet.
+MC, rensa minnet.
+Om det finns ett tal i minnet, visas ett M till vänster i displayen.
+M:et blinkar till om M+ eller M- trycks.
 
-This project is a starting point for a Flutter application.
+### varning ###
+Gör du något som räknaren inte accepterar, blinkar displayen röd.
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### responsiv ###
+Knapparnas ordning ändras beroende på om layouten är porträtt eller landskap.
+På stora skärmar ska inte räknaren ta upp hela skärmen.
