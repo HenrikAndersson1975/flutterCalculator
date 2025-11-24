@@ -77,6 +77,7 @@ bool _isInteger(double number) {
 
 
 int _getScalingFactor(double number) {
+  // todo om scaling ska användas
   int _factor = 100000000;
   return _factor;
 }

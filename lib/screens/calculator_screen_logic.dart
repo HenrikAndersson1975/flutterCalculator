@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_calculator/constants/button_labels.dart';
 import 'package:flutter_calculator/screens/calculator_screen.dart';
 import 'package:flutter_calculator/utils/expression/barrel_file.dart';
-import 'package:flutter_calculator/utils/extensions.dart';
+import 'package:flutter_calculator/utils/input_extensions.dart';
+import 'package:flutter_calculator/utils/number_extensions.dart';
 
 class CalculatorScreenLogic {
   final State<CalculatorScreen> state;
 
   // state-variabler
-  String _result = '0';
-  String _input = '';
-  String _smallText = '';
-  String _largeText = '';
-  bool _isShowingResult = false;
-  bool _isValid = true;
-  String _errorMessage = '';
-  double? _memoryValue;
-  bool? _memoryValueChanged;
+  String _result = '0';       // resultat av beräkning
+  String _input = '';         // uttryck 
+  String _smallText = '';     // liten text i display
+  String _largeText = '';     // stor text i display
+  bool _isShowingResult = false; // om displayen visar resultat (annars håller användaren på att skriva uttryck)
+  bool _isValid = true;       // om senast tryckta knapp accepterades
+  String _errorMessage = '';  // felmeddleande i samband med knapptryckning <---- används inte
+  double? _memoryValue;       // det värde som lagras i minnet
+  bool? _memoryValueChanged;  // om värdet i minnet ändrades när knapp trycktes
 
   // värden som ui använder
   String get smallText => _smallText;
@@ -33,51 +35,30 @@ class CalculatorScreenLogic {
     _memoryValueChanged = false;
 
     switch (buttonText) {
-      case 'M+':
-      case 'M-':
-      case 'MR':
-      case 'MC':
+      case ButtonLabels.memoryAdd:
+      case ButtonLabels.memorySubtract:
+      case ButtonLabels.memoryRestore:
+      case ButtonLabels.memoryClear:
         _memoryButtonClicked(buttonText);
         break;
-      case 'C':
+      case ButtonLabels.clear:
         _clearButtonClicked();
         break;
-      case 'DEL':
+      case ButtonLabels.delete:
         _deleteButtonClicked();
         break;
-      case '=':
+      case ButtonLabels.compute:
         _computeButtonClicked();
         break;
       default:
-        if (_isShowingResult && buttonText.isDigit()) {
-          _input = '';
-          _isShowingResult = false;
-        } 
-        else if (_isShowingResult && (buttonText.isOperator() || buttonText.isLeftParenthesis() || buttonText.isDecimalPoint())) {
-          _input = _result;
-          _isShowingResult = false;
-        } 
-        else if (_isShowingResult && buttonText.isRightParenthesis()) {
-          _input = '($_input';
-          _isShowingResult = false;
-        } else {
-          final (valid, error) = _tryNextChar(
-            _input,
-            buttonText,
-          );
-          _isValid = valid;
-          _errorMessage = error;
-          if (_isValid) { 
-            _isShowingResult = false;
-          }
-        }
+        _numericOrOperatorButtonClicked(buttonText);
 
-        //
+        // hantera hur tecken ska läggas till i inmatningsfältet
         if (_isValid) {
-          if (_input == '0' && !buttonText.isDecimalPoint()) {
+          if (_input == '0' && !buttonText.isDecimalPoint()) {         
             _input = buttonText;
           } else if (_input.isEmpty && buttonText.isDecimalPoint()) {
-            _input = '0,';
+            _input = '0${ButtonLabels.decimalPoint}';
           } else {
             _input += buttonText;
           }
@@ -86,13 +67,16 @@ class CalculatorScreenLogic {
     }
 
     // uppdatera displaytexter
-    _smallText = _isShowingResult ? _input : '';
+    _smallText = _isShowingResult ? _input : '';  // om resultat visas, skriv uttryck med liten text
     _largeText = _isShowingResult ? _result : _input;
   }
 
+  
+
+
   void _memoryButtonClicked(memoryButtonText) {
     switch (memoryButtonText) {
-      case 'M+':
+      case ButtonLabels.memoryAdd:
         if (_largeText.isEmpty || _largeText.isNumber()) {
           _memoryValue = (_memoryValue ?? 0) + (_largeText.toDouble() ?? 0);
           _memoryValueChanged = true;
@@ -102,7 +86,7 @@ class CalculatorScreenLogic {
         }
         break;
 
-      case 'M-':
+      case ButtonLabels.memorySubtract:
         if (_largeText.isEmpty || _largeText.isNumber()) {
           _memoryValue = (_memoryValue ?? 0) - (_largeText.toDouble() ?? 0);
           _memoryValueChanged = true;
@@ -112,7 +96,7 @@ class CalculatorScreenLogic {
         }
         break;
 
-      case 'MR':
+      case ButtonLabels.memoryRestore:
         if (_memoryValue != null) {
           if (_isShowingResult || _largeText == "0") {
             _isValid = true;
@@ -131,7 +115,7 @@ class CalculatorScreenLogic {
         }
         break;
 
-      case 'MC':
+      case ButtonLabels.memoryClear:
         _memoryValue = null;
         break;
     }
@@ -149,7 +133,7 @@ class CalculatorScreenLogic {
     }*/
     _input = _input.isNotEmpty ? _input.substring(0, _input.length - 1) : '';
     if (_input.isEmpty) {
-      keyboardButtonPressed('C');
+      keyboardButtonPressed(ButtonLabels.clear);
     } else {
       _result = '';
       _isShowingResult = false;
@@ -177,6 +161,45 @@ class CalculatorScreenLogic {
     }
   }
 
+  void _numericOrOperatorButtonClicked(String buttonText) {
+    // ... när man visar resultat av beräkning
+    if (_isShowingResult) {
+      if (buttonText.isDigit()) {
+        _input = '';
+        _isShowingResult = false;
+      } else if (buttonText.isOperator() || buttonText.isLeftParenthesis()) {
+        _input = _result;
+        _isShowingResult = false;
+      } else if (buttonText.isRightParenthesis()) {
+        _input = '($_input';
+        _isShowingResult = false;
+      } else if (buttonText.isDecimalPoint()) {
+        bool hasDecimalPoint = false;
+        for (int i = 0; i < _result.length && !hasDecimalPoint; i++) {        
+          hasDecimalPoint = _result[i].isDecimalPoint();
+        }
+        if (hasDecimalPoint) {
+          _isValid = false;
+          _errorMessage = "Två decimaltecken i samma tal.";
+        } else {
+          _input = _result;
+          _isShowingResult = false;
+        }
+      }
+    }
+
+    // ... när man håller på att skriva uttryck
+    else {   
+      final (valid, error) = _tryNextChar(_input, buttonText);
+      _isValid = valid;
+      _errorMessage = error;
+      if (_isValid) {
+        _isShowingResult = false;
+      }
+    }
+  }
+
+
   String _getExpressionResult(String expression) {
     final result = calculateExpression(expression);
     String resultAsString = _formatResult(result.toString());
@@ -184,9 +207,9 @@ class CalculatorScreenLogic {
   }
 
   String _formatResult(String resultAsString) {
-    // todo om en massa 0000000000
-    // maximalt antal tecken
-    //
+    // todo om en massa 0000000000 i rad? tecken på att dator inte kunna beräkna korrekt.
+    // maximalt antal tecken?
+    
 
     // om är ett decimaltal, ta bort alla avslutande nollor
     if (resultAsString.contains('.')) {
@@ -200,8 +223,8 @@ class CalculatorScreenLogic {
       }
     }
 
-    // returnera sträng med , som decimaltecken
-    return resultAsString.replaceAll('.', ',');
+    // returnera sträng med valt decimaltecken
+    return resultAsString.replaceAll('.', ButtonLabels.decimalPoint);
   }
 
   // kontrollerar om uttryck är giltigt
@@ -259,10 +282,10 @@ class CalculatorScreenLogic {
         isValid = false;
         errorMessage = "Kan bara ha decimaltecken efter siffra.";
       }
-    } 
+    }
     // minustecken
     else if (inputChar.isSubtractOperator()) {
-      // tillåt efter siffror och efter parenteser
+      // tillåt först i uttryck, efter siffror och efter parenteser
       isValid =
           (prev.isEmpty ||
           prev.isDigit() ||
@@ -271,25 +294,30 @@ class CalculatorScreenLogic {
       if (!isValid) {
         errorMessage = "Hantera minustecken bättre!";
       }
-    } 
+    }
     // övriga operatorer
-    else if (inputChar.isOperator()) {
+    else if (inputChar.isOperator()) {     
+      // tillåt efter siffror och efter högerparentes
       if (prev.isEmpty) {
         isValid = false;
-      } else if (!prev.isDigit() && !prev.isRightParenthesis()) {
-        isValid = false;
+      } 
+      else if (prev == '0' && input.length == 1) {
+        isValid = false;  // om det står 0 i inmatningsfältet, tillåt inte operator
       }
+      else if (!prev.isDigit() && !prev.isRightParenthesis()) {
+        isValid = false;
+      } 
       if (!isValid) {
         errorMessage = "Hur hanterar du operatorer?";
       }
-    } 
+    }
     // vänsterparentes
     else if (inputChar.isLeftParenthesis()) {
       if (prev.isDecimalPoint()) {
         isValid = false;
         errorMessage = "Vänsterparentes kan inte komma efter decimaltecken.";
       }
-    } 
+    }
     // högerparentes
     else if (inputChar.isRightParenthesis()) {
       if (!prev.isDigit() && !prev.isRightParenthesis()) {

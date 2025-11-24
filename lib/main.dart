@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_calculator/screens/calculator_screen.dart';
-import 'package:flutter_calculator/theme/calculator_theme.dart';
+import 'package:flutter_calculator/theme/calculator_theme_settings.dart';
 
 void main() {
   runApp(const CalculatorApp());
@@ -14,7 +14,7 @@ class CalculatorApp extends StatelessWidget {
     return MaterialApp(
       title: 'Uträknare',
       debugShowCheckedModeBanner: false,
-      theme: CalculatorTheme.light,
+      theme: CalculatorThemeSettings.light,
       home: const SafeArea(child: CalculatorScreen(title: 'Flutter-kalkylator')),
     );
   }   

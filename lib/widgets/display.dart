@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_calculator/theme/calculator_app_theme.dart';
-import 'package:flutter_calculator/theme/extensions/calculator_display_theme.dart';
+import 'package:flutter_calculator/theme/calculator_screen_theme.dart';
+import 'package:flutter_calculator/theme/calculator_display_theme.dart';
 
 class Display extends StatelessWidget {
   final String smallText;
@@ -19,14 +19,14 @@ class Display extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    CalculatorDisplayTheme theme = Theme.of(context).extension<CalculatorAppTheme>()!.display;
+    CalculatorDisplayTheme theme = Theme.of(context).extension<CalculatorScreenTheme>()!.display;
 
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
        
         double szFontInput = constraints.maxHeight * 0.27;
         double szFontExpression = szFontInput * 3/4; 
-        double szFontMemory = szFontInput/5;
+        double szFontMemory = szFontInput/4;
 
         return Container(
           width: double.infinity,
