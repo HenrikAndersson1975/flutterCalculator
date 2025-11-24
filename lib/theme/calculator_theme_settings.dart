@@ -1,16 +1,16 @@
 // lib/core/theme/app_theme.dart
 import 'package:flutter/material.dart';
-import 'calculator_app_theme.dart';
-import 'extensions/calculator_buttons_theme.dart';
-import 'extensions/calculator_display_theme.dart';
+import 'calculator_screen_theme.dart';
+import 'calculator_buttons_theme.dart';
+import 'calculator_display_theme.dart';
 
-class CalculatorTheme {
+class CalculatorThemeSettings {
   static final light = ThemeData(
     useMaterial3: true,
     scaffoldBackgroundColor: const Color.fromARGB(255, 212, 219, 211),
     extensions: <ThemeExtension<dynamic>>[
-      const CalculatorAppTheme(
-        calculatorBackgroundColor: Color.fromARGB(255, 112, 109, 109),
+      const CalculatorScreenTheme(
+        backgroundColor: Color.fromARGB(255, 112, 109, 109),
         display: CalculatorDisplayTheme(
           displayColor: Colors.white,
           displayAlertColor: Colors.red,

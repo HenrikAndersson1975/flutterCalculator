@@ -1,4 +1,4 @@
-# flutter_calculator
+# flutter_calculator 
 
 ### operationer ###
 Räknaren hanterar räknesätten +, -, * och /.
@@ -19,3 +19,24 @@ Gör du något som räknaren inte accepterar, blinkar displayen röd.
 ### responsiv ###
 Knapparnas ordning ändras beroende på om layouten är porträtt eller landskap.
 På stora skärmar ska inte räknaren ta upp hela skärmen.
+
+
+
+
+#### programfiler ####
+
+lib -> constants
+I button_labels.dart anges de texter/tecken som står på kalkylatorns knappar.
+
+lib -> screens
+Kalkylatorvyn, samt dess logik.
+
+lib -> theme 
+Klasser för att hantera tema.
+I calculator_theme_settings.dart anges vilka färger som används i programmet.
+
+lib -> utils
+Klasser för att hantera beräkning av uttryck.
+
+lib -> widgets
+De element som kalkylatorvyn är uppbyggd av.

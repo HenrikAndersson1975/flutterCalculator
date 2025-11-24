@@ -1,4 +1,6 @@
+import 'package:flutter_calculator/constants/button_labels.dart';
 import 'package:flutter_calculator/utils/expression/barrel_file.dart';
+import 'package:flutter_calculator/utils/input_extensions.dart';
 
 //
 // beräknar resultat (tal) av uttrycket
@@ -14,12 +16,8 @@ List<Token> _tokenizeExpression(String expression) {
 
   //
   expression = _expandScientificNotation(expression);
-
-  // byt decimaltecken
   expression = expression.replaceAll(' ', '').replaceAll(',', '.');
-
   expression = _handleSubtractOperators(expression);
-
 
   final tokens = <Token>[];
   final chars = expression.split('');
@@ -61,8 +59,6 @@ List<Token> _tokenizeExpression(String expression) {
     }
 
     else {
-
-
       throw Exception('Ogiltigt tecken: $char');
     }
 
@@ -74,13 +70,13 @@ List<Token> _tokenizeExpression(String expression) {
 
 String _handleSubtractOperators(String expression) {
 
-  String subtractOperatorReplacement = "(0-1)*";
+  String subtractOperatorReplacement = "${ButtonLabels.parenthesisLeft}0${ButtonLabels.operatorSubtract}1${ButtonLabels.parenthesisRight}${ButtonLabels.operatorMultiply}"; // '(0-1)*'
 
   // om minustecken efter vänsterparentes
-  expression = expression.replaceAll('(-', '($subtractOperatorReplacement');
+  expression = expression.replaceAll('${ButtonLabels.parenthesisLeft}${ButtonLabels.operatorSubtract}', '($subtractOperatorReplacement');  // '(-' ==> '((0-1)*'
 
   // om inleder med minustecken  
-  if (expression.isNotEmpty && expression[0].isSubtractOperator()) { expression = '$subtractOperatorReplacement${expression.substring(1)}'; }
+  if (expression.isNotEmpty && expression[0].isSubtractOperator()) { expression = '$subtractOperatorReplacement${expression.substring(1)}'; }  // '-' ==> '(0-1)*'
 
   return expression;
 }
