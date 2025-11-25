@@ -1,3 +1,4 @@
+import 'package:decimal/decimal.dart';
 import 'package:flutter_calculator/constants/button_labels.dart';
 import 'package:flutter_calculator/utils/expression/barrel_file.dart';
 import 'package:flutter_calculator/utils/input_extensions.dart';
@@ -5,10 +6,10 @@ import 'package:flutter_calculator/utils/input_extensions.dart';
 //
 // beräknar resultat (tal) av uttrycket
 //
-double calculateExpression(String expression) {
+Decimal calculateExpression(String expression) {
   final tokens = _tokenizeExpression(expression);
   final rpn = _toReversePolishNotation(tokens);
-  double result = _evaluateReversePolishNotation(rpn);
+  Decimal result = _evaluateReversePolishNotation(rpn);
   return result;
 }
 
@@ -34,7 +35,7 @@ List<Token> _tokenizeExpression(String expression) {
         num += chars[i];
         i++;
       }
-      double number = double.parse(num);
+      Decimal number = Decimal.parse(num);
       tokens.add(Token(TokenType.number, number));
       continue;
     }
@@ -144,8 +145,8 @@ List<Token> _toReversePolishNotation(List<Token> tokens) {
   return output;
 }
 
-double _evaluateReversePolishNotation(List<Token> rpn) {
-  final stack = <double>[];
+Decimal _evaluateReversePolishNotation(List<Token> rpn) {
+  final stack = <Decimal>[];
 
   for (final token in rpn) {
     if (token.type == TokenType.number) {
@@ -156,21 +157,20 @@ double _evaluateReversePolishNotation(List<Token> rpn) {
       final b = stack.removeLast();
       final a = stack.removeLast();
 
-      double mathsOperationResult;
+      Decimal mathsOperationResult;
       {
       switch (token.type) {
         case TokenType.add:
-          mathsOperationResult=operationAdd(a, b);
+          mathsOperationResult = operationAdd(a, b);
           break;
         case TokenType.subtract:         
-          mathsOperationResult=operationSubtract(a, b);
+          mathsOperationResult = operationSubtract(a, b);
           break;
         case TokenType.multiply:         
-          mathsOperationResult=operationMultiply(a, b);
+          mathsOperationResult = operationMultiply(a, b);
           break;
         case TokenType.divide:               
-          mathsOperationResult=operationDivide(a, b);
-
+          mathsOperationResult = operationDivide(a, b);
           break;
         default:
           throw Exception('Okänd operator');

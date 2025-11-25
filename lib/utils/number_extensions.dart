@@ -1,3 +1,4 @@
+import 'package:decimal/decimal.dart';
 import 'package:flutter_calculator/utils/input_extensions.dart';
 
 extension NumberExtension on String
@@ -12,11 +13,11 @@ extension NumberExtension on String
     return isNumber;
   }
 
-  double? toDouble() {
+  Decimal? toDecimal() {
     String text = this;
-    double? value;
+    Decimal? value;
     try {
-      value = double.parse(text.replaceAll(',', '.'));
+      value = Decimal.parse(text.replaceAll(',', '.'));
     }
     catch (e) {
       value = null;
@@ -24,4 +25,3 @@ extension NumberExtension on String
     return value;
   }
 }
-

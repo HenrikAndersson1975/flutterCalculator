@@ -1,9 +1,11 @@
+import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_calculator/constants/button_labels.dart';
 import 'package:flutter_calculator/screens/calculator_screen.dart';
 import 'package:flutter_calculator/utils/expression/barrel_file.dart';
 import 'package:flutter_calculator/utils/input_extensions.dart';
 import 'package:flutter_calculator/utils/number_extensions.dart';
+
 
 class CalculatorScreenLogic {
   final State<CalculatorScreen> state;
@@ -16,7 +18,7 @@ class CalculatorScreenLogic {
   bool _isShowingResult = false; // om displayen visar resultat (annars håller användaren på att skriva uttryck)
   bool _isValid = true;       // om senast tryckta knapp accepterades
   String _errorMessage = '';  // felmeddleande i samband med knapptryckning <---- används inte
-  double? _memoryValue;       // det värde som lagras i minnet
+  Decimal? _memoryValue;       // det värde som lagras i minnet
   bool? _memoryValueChanged;  // om värdet i minnet ändrades när knapp trycktes
 
   // värden som ui använder
@@ -78,7 +80,7 @@ class CalculatorScreenLogic {
     switch (memoryButtonText) {
       case ButtonLabels.memoryAdd:
         if (_largeText.isEmpty || _largeText.isNumber()) {
-          _memoryValue = (_memoryValue ?? 0) + (_largeText.toDouble() ?? 0);
+          _memoryValue = (_memoryValue ?? Decimal.zero) + (_largeText.toDecimal() ?? Decimal.zero);
           _memoryValueChanged = true;
         } else {
           _isValid = false;
@@ -88,7 +90,7 @@ class CalculatorScreenLogic {
 
       case ButtonLabels.memorySubtract:
         if (_largeText.isEmpty || _largeText.isNumber()) {
-          _memoryValue = (_memoryValue ?? 0) - (_largeText.toDouble() ?? 0);
+          _memoryValue = (_memoryValue ?? Decimal.zero) - (_largeText.toDecimal() ?? Decimal.zero);
           _memoryValueChanged = true;
         } else {
           _isValid = false;
