@@ -1,8 +1,9 @@
+import 'package:decimal/decimal.dart';
 import 'token_types.dart';
 
 class Token {
   final TokenType type;
-  final double? value; // bara för number
+  final Decimal? value; // bara för number
 
   Token(this.type, [this.value]);
 

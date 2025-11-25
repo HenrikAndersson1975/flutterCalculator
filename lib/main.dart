@@ -19,5 +19,3 @@ class CalculatorApp extends StatelessWidget {
     );
   }   
 }
-
- 
