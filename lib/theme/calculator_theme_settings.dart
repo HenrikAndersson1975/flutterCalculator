@@ -1,4 +1,3 @@
-// lib/core/theme/app_theme.dart
 import 'package:flutter/material.dart';
 import 'calculator_screen_theme.dart';
 import 'calculator_buttons_theme.dart';
