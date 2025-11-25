@@ -74,9 +74,7 @@ class CalculatorScreenLogic {
   }
 
   
-
-
-  void _memoryButtonClicked(memoryButtonText) {
+  void _memoryButtonClicked(String memoryButtonText) {
     switch (memoryButtonText) {
       case ButtonLabels.memoryAdd:
         if (_largeText.isEmpty || _largeText.isNumber()) {
@@ -101,13 +99,21 @@ class CalculatorScreenLogic {
       case ButtonLabels.memoryRestore:
         if (_memoryValue != null) {
           if (_isShowingResult || _largeText == "0") {
+            // ersätt hela inmatningsfältet
             _isValid = true;
             _input = _formatResult(_memoryValue.toString());
           } else {
             String lastChar = _largeText[_largeText.length - 1];
             if (lastChar.isOperator() || lastChar.isLeftParenthesis()) {
-              _input = _largeText + _formatResult(_memoryValue.toString());
+              // lägg till efter befintlig inmatning
+              if (_memoryValue! < Decimal.zero) {
+                // om negativt tal i minnet, lägg till parenteser runt
+                _input = '$_largeText${ButtonLabels.parenthesisLeft}${_formatResult(_memoryValue.toString())}${ButtonLabels.parenthesisRight}';
+              } else {  
+                _input = '$_largeText${_formatResult(_memoryValue.toString())}';
+              }        
             } else {
+              // ersätt hela inmatningsfältet
               _input = _formatResult(_memoryValue.toString());
             }
           }
@@ -209,10 +215,7 @@ class CalculatorScreenLogic {
   }
 
   String _formatResult(String resultAsString) {
-    // todo om en massa 0000000000 i rad? tecken på att dator inte kunna beräkna korrekt.
-    // maximalt antal tecken?
-    
-
+      
     // om är ett decimaltal, ta bort alla avslutande nollor
     if (resultAsString.contains('.')) {
       while (resultAsString.isNotEmpty && resultAsString.endsWith('0')) {
